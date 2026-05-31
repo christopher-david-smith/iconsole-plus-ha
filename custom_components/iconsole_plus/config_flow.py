@@ -55,7 +55,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 description_placeholders={"name": self._discovery_info.name},
             )
 
-        # If manual setup, list discovered devices
+        # List discovered devices
         discovered = async_discovered_service_info(self.hass)
         device_options = {
             service.address: f"{service.name} ({service.address})"
@@ -63,7 +63,14 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             if any(uuid.lower() == "49535343-fe7d-4ae5-8fa9-9fafd205e455" for uuid in service.service_uuids)
         }
 
-        # If no devices found with the specific UUID, show a text input for manual address
+        # If no devices found with the specific UUID, wait a few seconds and try once more
+        # This gives the HA bluetooth scanner a chance to populate if it was idle
+        if not device_options and not self.context.get("tried_scan"):
+            self.context["tried_scan"] = True
+            await asyncio.sleep(5.0)
+            return await self.async_step_user()
+
+        # If still no devices found, show a text input for manual address
         if not device_options:
             return self.async_show_form(
                 step_id="user",
@@ -72,6 +79,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                         vol.Required("address"): str,
                     }
                 ),
+                description_placeholders={"name": "iConsole+"},
                 errors={"base": "no_devices_found_manual"},
             )
 
