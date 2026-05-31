@@ -11,6 +11,6 @@
       "service_uuid": "49535343-fe7d-4ae5-8fa9-9fafd205e455"
     }
   ],
-  "requirements": ["iconsole-plus==0.1.0"],
-  "version": "0.1.0"
+  "requirements": ["iconsole-plus==0.1.1"],
+  "version": "0.1.1"
 }
