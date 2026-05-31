@@ -44,7 +44,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         """Handle the initial step."""
         if user_input is not None:
             return self.async_create_entry(
-                title=self._discovery_info.name if self._discovery_info else "iConsol+",
+                title=self._discovery_info.name if self._discovery_info else "iConsole+",
                 data={
                     "address": self._discovery_info.address if self._discovery_info else user_input["address"],
                 },
@@ -84,15 +84,13 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 description_placeholders={"name": "iConsole+"},
                 errors={"base": "no_devices_found_manual"},
             )
-return self.async_show_form(
-    step_id="user",
-    data_schema=vol.Schema(
-        {
-            vol.Required("address"): vol.In(device_options),
-        }
-    ),
-    description_placeholders={"name": "iConsole+"},
-)
 
+        return self.async_show_form(
+            step_id="user",
+            data_schema=vol.Schema(
+                {
+                    vol.Required("address"): vol.In(device_options),
+                }
+            ),
             description_placeholders={"name": "iConsole+"},
         )
