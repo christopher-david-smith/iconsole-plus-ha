@@ -11,6 +11,9 @@
     "abort": {
       "no_devices_found": "No iConsol+ devices found nearby.",
       "already_configured": "Device is already configured"
+    },
+    "error": {
+      "no_devices_found_manual": "No iConsole+ devices found. Please enter the Bluetooth MAC address manually (e.g., AA:BB:CC:DD:EE:FF)."
     }
   }
 }
