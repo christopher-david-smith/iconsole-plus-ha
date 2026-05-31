@@ -1,9 +1,9 @@
 {
   "domain": "iconsole_plus",
-  "name": "iConsol+",
-  "codeowners": ["@user"],
+  "name": "iConsole+",
+  "codeowners": ["@christopher-david-smith"],
   "config_flow": true,
-  "documentation": "https://github.com/user/iconsole-plus-ha",
+  "documentation": "https://github.com/christopher-david-smith/iconsole-plus-ha",
   "integration_type": "device",
   "iot_class": "local_push",
   "bluetooth": [
