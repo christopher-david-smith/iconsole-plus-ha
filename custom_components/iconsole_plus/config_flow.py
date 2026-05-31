@@ -84,12 +84,15 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 description_placeholders={"name": "iConsole+"},
                 errors={"base": "no_devices_found_manual"},
             )
+return self.async_show_form(
+    step_id="user",
+    data_schema=vol.Schema(
+        {
+            vol.Required("address"): vol.In(device_options),
+        }
+    ),
+    description_placeholders={"name": "iConsole+"},
+)
 
-        return self.async_show_form(
-            step_id="user",
-            data_schema=vol.Schema(
-                {
-                    vol.Required("address"): vol.In(device_options),
-                }
-            ),
+            description_placeholders={"name": "iConsole+"},
         )

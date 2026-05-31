@@ -42,27 +42,36 @@ class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
 
     async def async_start_session(self) -> None:
         """Start the bike session."""
+        _LOGGER.debug("Starting iConsole+ session for %s", self.address)
         ble_device = async_ble_device_from_address(self.hass, self.address)
         if not ble_device:
-            raise UpdateFailed(f"Could not find device with address {self.address}")
+            _LOGGER.warning("Device %s not found in Bluetooth cache, will attempt to find it during connection", self.address)
+            # Use the address string as fallback
+            device_to_use = self.address
+        else:
+            device_to_use = ble_device
 
-        self.client = IConsolePlusClient(ble_device)
+        self.client = IConsolePlusClient(device_to_use)
         self._current_level = 1
         self._session_task = self.hass.async_create_task(self._run_session())
 
     async def _run_session(self) -> None:
         """Background task to run the session and push updates."""
+        _LOGGER.debug("iConsole+ session task started")
         try:
             async with self.client.session():
+                _LOGGER.info("Successfully connected and handshaked with iConsole+ at %s", self.address)
                 async for data in self.client:
                     self.async_set_updated_data(data)
         except Exception as err:
-            _LOGGER.error("Error in iConsol+ session: %s", err)
+            _LOGGER.error("Error in iConsole+ session for %s: %s", self.address, err, exc_info=True)
             self.last_update_success = False
             self.async_update_listeners()
         finally:
+            _LOGGER.debug("iConsole+ session task finished, cleaning up")
             self.client = None
             self._session_task = None
+            self.async_update_listeners()
 
     async def async_stop_session(self) -> None:
         """Stop the bike session."""
