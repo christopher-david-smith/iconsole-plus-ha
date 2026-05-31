@@ -55,11 +55,12 @@ class IConsolePlusSensor(CoordinatorEntity[IConsolePlusCoordinator], SensorEntit
         """Initialize the sensor."""
         super().__init__(coordinator)
         self._key = key
-        self._attr_name = f"{coordinator.name} {name}"
+        self._attr_name = name
         self._attr_unique_id = f"{coordinator.address}_{key}"
         self._attr_native_unit_of_measurement = unit
         self._attr_device_class = device_class
         self._attr_state_class = SensorStateClass.MEASUREMENT
+        self._attr_device_info = coordinator.device_info
 
     @property
     def native_value(self) -> float | int | None:

@@ -25,12 +25,13 @@ class IConsolePlusResistanceNumber(CoordinatorEntity[IConsolePlusCoordinator], N
     def __init__(self, coordinator: IConsolePlusCoordinator) -> None:
         """Initialize the number entity."""
         super().__init__(coordinator)
-        self._attr_name = f"{coordinator.name} Resistance"
+        self._attr_name = "Resistance"
         self._attr_unique_id = f"{coordinator.address}_resistance"
         self._attr_native_min_value = 1
         self._attr_native_max_value = 32
         self._attr_native_step = 1
         self._attr_icon = "mdi:weight-lifter"
+        self._attr_device_info = coordinator.device_info
 
     @property
     def native_value(self) -> float | None:

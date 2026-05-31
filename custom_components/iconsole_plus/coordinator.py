@@ -7,28 +7,38 @@ from datetime import timedelta
 
 from homeassistant.components.bluetooth import async_ble_device_from_address
 from homeassistant.core import HomeAssistant
+from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from iconsole_plus.client import IConsolePlusClient
-from iconsole_plus.models import TelemetryData
+from .const import DOMAIN
+from .iconsole_plus.client import IConsolePlusClient
+from .iconsole_plus.models import TelemetryData
+
 
 _LOGGER = logging.getLogger(__name__)
 
 class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
     """Class to manage fetching iConsol+ data."""
 
-    def __init__(self, hass: HomeAssistant, address: str) -> None:
+    def __init__(self, hass: HomeAssistant, address: str, name: str) -> None:
         """Initialize the coordinator."""
         super().__init__(
             hass,
             _LOGGER,
-            name=f"iConsol+ {address}",
+            name=name,
             update_interval=None, # We use push updates
         )
         self.address = address
         self.client: IConsolePlusClient | None = None
         self._session_task: asyncio.Task | None = None
         self._current_level: int = 1
+
+        self.device_info = DeviceInfo(
+            identifiers={(DOMAIN, address)},
+            name=name,
+            manufacturer="iConsole+",
+            model="Fitness Equipment",
+        )
 
     async def async_start_session(self) -> None:
         """Start the bike session."""

@@ -59,9 +59,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         # List discovered devices
         discovered = async_discovered_service_info(self.hass)
         device_options = {
-            service.address: f"{service.name} ({service.address})"
+            service.address: f"{service.name or 'Unknown'} ({service.address})"
             for service in discovered
             if any(uuid.lower() == "49535343-fe7d-4ae5-8fa9-9fafd205e455" for uuid in service.service_uuids)
+            or "iconsole" in (service.name or "").lower()
         }
 
         # If no devices found with the specific UUID, wait a few seconds and try once more

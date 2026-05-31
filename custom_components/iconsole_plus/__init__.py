@@ -17,7 +17,7 @@ PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SWITCH, Platform.NUMBER]
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up iConsol+ from a config entry."""
     address = entry.data["address"]
-    coordinator = IConsolePlusCoordinator(hass, address)
+    coordinator = IConsolePlusCoordinator(hass, address, entry.title)
     
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator

@@ -27,9 +27,10 @@ class IConsolePlusWorkoutSwitch(CoordinatorEntity[IConsolePlusCoordinator], Swit
     def __init__(self, coordinator: IConsolePlusCoordinator) -> None:
         """Initialize the switch."""
         super().__init__(coordinator)
-        self._attr_name = f"{coordinator.name} Workout"
+        self._attr_name = "Workout"
         self._attr_unique_id = f"{coordinator.address}_workout"
         self._attr_icon = "mdi:bike"
+        self._attr_device_info = coordinator.device_info
 
     @property
     def is_on(self) -> bool:

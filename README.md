@@ -8,8 +8,9 @@ This integration uses the [iconsole-plus](https://pypi.org/project/iconsole-plus
 
 ## Features
 
-- **Automatic Discovery**: Discovers your equipment automatically via Bluetooth.
-- **Workout Control**: A dedicated switch to start and stop workout sessions.
+- **Automatic Discovery**: Discovers your equipment automatically via Bluetooth (UUID or name-based).
+- **Device Support**: Groups all entities under a single "iConsole+" device in Home Assistant.
+- **Workout Control**: A dedicated switch to start and stop workout sessions (connects/disconnects Bluetooth).
 - **Resistance Control**: Real-time resistance adjustment (level 1-32).
 - **Live Telemetry**: High-frequency updates for:
   - Speed (km/h)
