@@ -12,6 +12,6 @@
     }
   ],
   "requirements": ["iconsole-plus==0.1.2"],
-  "version": "0.1.4",
+  "version": "0.1.6",
   "homeassistant": "2024.1.0"
 }
