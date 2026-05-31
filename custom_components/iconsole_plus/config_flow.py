@@ -1,6 +1,7 @@
 """Config flow for iConsol+ integration."""
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import Any
 
