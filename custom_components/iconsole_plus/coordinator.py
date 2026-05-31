@@ -11,8 +11,8 @@ from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 from .const import DOMAIN
-from .iconsole_plus.client import IConsolePlusClient
-from .iconsole_plus.models import TelemetryData
+from iconsole_plus.client import IConsolePlusClient
+from iconsole_plus.models import TelemetryData
 
 
 _LOGGER = logging.getLogger(__name__)
