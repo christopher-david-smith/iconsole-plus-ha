@@ -60,11 +60,20 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         device_options = {
             service.address: f"{service.name} ({service.address})"
             for service in discovered
-            if any(uuid == "49535343-fe7d-4ae5-8fa9-9fafd205e455" for uuid in service.service_uuids)
+            if any(uuid.lower() == "49535343-fe7d-4ae5-8fa9-9fafd205e455" for uuid in service.service_uuids)
         }
 
+        # If no devices found with the specific UUID, show a text input for manual address
         if not device_options:
-            return self.async_abort(reason="no_devices_found")
+            return self.async_show_form(
+                step_id="user",
+                data_schema=vol.Schema(
+                    {
+                        vol.Required("address"): str,
+                    }
+                ),
+                errors={"base": "no_devices_found_manual"},
+            )
 
         return self.async_show_form(
             step_id="user",
