@@ -36,7 +36,7 @@ class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
         self.client: IConsolePlusClient | None = None
         self._session_task: asyncio.Task | None = None
         self._current_level: int = 1
-        self.use_custom_calories: bool = entry.options.get("calculate_calories", False)
+        self.use_custom_calories: bool = False
 
         self.device_info = DeviceInfo(
             identifiers={(DOMAIN, address)},
