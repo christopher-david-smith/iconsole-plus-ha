@@ -11,7 +11,7 @@
       "service_uuid": "49535343-fe7d-4ae5-8fa9-9fafd205e455"
     }
   ],
-  "requirements": ["iconsole-plus==0.1.3"],
-  "version": "0.1.13",
+  "requirements": ["iconsole-plus==0.1.4"],
+  "version": "0.1.14",
   "homeassistant": "2024.1.0"
 }

@@ -86,5 +86,5 @@ class IConsolePlusSensor(CoordinatorEntity[IConsolePlusCoordinator], SensorEntit
 
     @property
     def available(self) -> bool:
-        """Sensors are only available during an active session."""
-        return self.coordinator.client is not None and self.coordinator.client.is_connected
+        """Sensors are always available to retain the last workout's data."""
+        return True
