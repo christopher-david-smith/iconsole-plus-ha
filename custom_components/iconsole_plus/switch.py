@@ -37,6 +37,11 @@ class IConsolePlusWorkoutSwitch(CoordinatorEntity[IConsolePlusCoordinator], Swit
         """Return true if a session is active."""
         return self.coordinator.client is not None and self.coordinator.client.is_connected
 
+    @property
+    def available(self) -> bool:
+        """The workout switch is always available to allow starting a session."""
+        return True
+
     async def async_turn_on(self, **kwargs: Any) -> None:
         """Start the workout session."""
         await self.coordinator.async_start_session()

@@ -83,3 +83,8 @@ class IConsolePlusSensor(CoordinatorEntity[IConsolePlusCoordinator], SensorEntit
         if self._key == "heart_rate":
             return self.coordinator.data.heart_rate_bpm
         return None
+
+    @property
+    def available(self) -> bool:
+        """Sensors are only available during an active session."""
+        return self.coordinator.client is not None and self.coordinator.client.is_connected

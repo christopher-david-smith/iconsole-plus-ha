@@ -40,6 +40,11 @@ class IConsolePlusResistanceNumber(CoordinatorEntity[IConsolePlusCoordinator], N
         # but the bike sends B6 on change. We should probably track it in the coordinator.
         return getattr(self.coordinator, "_current_level", 1)
 
+    @property
+    def available(self) -> bool:
+        """The resistance slider is only available during an active session."""
+        return self.coordinator.client is not None and self.coordinator.client.is_connected
+
     async def async_set_native_value(self, value: float) -> None:
         """Set the resistance level."""
         if self.coordinator.client:
