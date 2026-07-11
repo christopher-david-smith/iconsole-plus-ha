@@ -10,6 +10,8 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import DeviceInfo
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
+from dataclasses import replace as dataclass_replace
+
 from .const import DOMAIN
 from iconsole_plus.client import IConsolePlusClient
 from iconsole_plus.models import TelemetryData
@@ -32,6 +34,7 @@ class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
         self.client: IConsolePlusClient | None = None
         self._session_task: asyncio.Task | None = None
         self._current_level: int = 1
+        self.use_custom_calories: bool = False
 
         self.device_info = DeviceInfo(
             identifiers={(DOMAIN, address)},
@@ -62,10 +65,26 @@ class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
     async def _run_session(self) -> None:
         """Background task to run the session and push updates."""
         _LOGGER.debug("iConsole+ session task started")
+        last_update_time = None
+        cumulative_calories = 0.0
         try:
             async with self.client.session():
                 _LOGGER.info("Successfully connected and handshaked with iConsole+ at %s", self.address)
                 async for data in self.client:
+                    current_time = asyncio.get_running_loop().time()
+                    if last_update_time is not None:
+                        dt = current_time - last_update_time
+                        if 0 < dt < 5.0:
+                            # Joules = Watts * seconds
+                            work_joules = data.power_watts * dt
+                            # Convert to kcal (assuming 22% biological efficiency)
+                            # kcal = Joules / (4184 * 0.22)
+                            cumulative_calories += work_joules / 920.48
+                    last_update_time = current_time
+
+                    if self.use_custom_calories:
+                        data = dataclass_replace(data, calories_kcal=round(cumulative_calories))
+
                     self.async_set_updated_data(data)
         except Exception as err:
             _LOGGER.error("Error in iConsole+ session for %s: %s", self.address, err, exc_info=True)
