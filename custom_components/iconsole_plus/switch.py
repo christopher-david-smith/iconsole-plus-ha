@@ -35,7 +35,7 @@ class IConsolePlusWorkoutSwitch(CoordinatorEntity[IConsolePlusCoordinator], Swit
     @property
     def is_on(self) -> bool:
         """Return true if a session is active."""
-        return self.coordinator.client is not None and self.coordinator.client.is_connected
+        return self.coordinator.client is not None
 
     @property
     def available(self) -> bool:

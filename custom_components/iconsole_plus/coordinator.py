@@ -42,6 +42,10 @@ class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
 
     async def async_start_session(self) -> None:
         """Start the bike session."""
+        if self._session_task is not None:
+            _LOGGER.debug("iConsole+ session already starting or active for %s", self.address)
+            return
+
         _LOGGER.debug("Starting iConsole+ session for %s", self.address)
         ble_device = async_ble_device_from_address(self.hass, self.address)
         if not ble_device:
@@ -76,5 +80,11 @@ class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
     async def async_stop_session(self) -> None:
         """Stop the bike session."""
         if self._session_task:
-            self._session_task.cancel()
+            _LOGGER.debug("Stopping iConsole+ session for %s", self.address)
+            task = self._session_task
             self._session_task = None
+            task.cancel()
+            try:
+                await task
+            except asyncio.CancelledError:
+                pass
