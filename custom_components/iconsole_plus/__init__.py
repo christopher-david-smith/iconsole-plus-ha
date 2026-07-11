@@ -12,19 +12,32 @@ from .coordinator import IConsolePlusCoordinator
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[Platform] = [Platform.SENSOR, Platform.SWITCH, Platform.NUMBER]
+PLATFORMS: list[Platform] = [
+    Platform.SENSOR,
+    Platform.SWITCH,
+    Platform.NUMBER,
+    Platform.BUTTON,
+]
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Set up iConsol+ from a config entry."""
     address = entry.data["address"]
-    coordinator = IConsolePlusCoordinator(hass, address, entry.title)
+    coordinator = IConsolePlusCoordinator(hass, address, entry.title, entry)
     
     hass.data.setdefault(DOMAIN, {})
     hass.data[DOMAIN][entry.entry_id] = coordinator
 
+    # Register options update listener
+    entry.async_on_unload(entry.add_update_listener(update_listener))
+
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
 
     return True
+
+async def update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
+    """Update options."""
+    coordinator: IConsolePlusCoordinator = hass.data[DOMAIN][entry.entry_id]
+    coordinator.use_custom_calories = entry.options.get("calculate_calories", False)
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Unload a config entry."""

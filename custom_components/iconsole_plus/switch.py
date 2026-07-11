@@ -19,71 +19,35 @@ async def async_setup_entry(
 ) -> None:
     """Set up the iConsol+ switches."""
     coordinator: IConsolePlusCoordinator = hass.data[DOMAIN][entry.entry_id]
-    async_add_entities(
-        [
-            IConsolePlusWorkoutSwitch(coordinator),
-            IConsolePlusCustomCaloriesSwitch(coordinator),
-        ]
-    )
+    async_add_entities([IConsolePlusConnectionSwitch(coordinator)])
 
-class IConsolePlusWorkoutSwitch(CoordinatorEntity[IConsolePlusCoordinator], SwitchEntity):
-    """Switch to start/stop a workout session."""
+class IConsolePlusConnectionSwitch(CoordinatorEntity[IConsolePlusCoordinator], SwitchEntity):
+    """Switch to manage the background BLE connection session."""
 
     def __init__(self, coordinator: IConsolePlusCoordinator) -> None:
         """Initialize the switch."""
         super().__init__(coordinator)
-        self._attr_name = "Workout"
-        self._attr_unique_id = f"{coordinator.address}_workout"
-        self._attr_icon = "mdi:bike"
+        self._attr_name = "Connection"
+        self._attr_unique_id = f"{coordinator.address}_connection"
+        self._attr_icon = "mdi:bluetooth"
         self._attr_device_info = coordinator.device_info
 
     @property
     def is_on(self) -> bool:
-        """Return true if a session is active."""
+        """Return true if a connection session is active/enabled."""
         return self.coordinator.client is not None
 
     @property
     def available(self) -> bool:
-        """The workout switch is always available to allow starting a session."""
+        """The connection switch is always available."""
         return True
 
     async def async_turn_on(self, **kwargs: Any) -> None:
-        """Start the workout session."""
+        """Enable background connection session."""
         await self.coordinator.async_start_session()
         self.async_write_ha_state()
 
     async def async_turn_off(self, **kwargs: Any) -> None:
-        """Stop the workout session."""
+        """Disable background connection session."""
         await self.coordinator.async_stop_session()
-        self.async_write_ha_state()
-
-class IConsolePlusCustomCaloriesSwitch(CoordinatorEntity[IConsolePlusCoordinator], SwitchEntity):
-    """Switch to toggle custom calorie calculation instead of equipment reporting."""
-
-    def __init__(self, coordinator: IConsolePlusCoordinator) -> None:
-        """Initialize the switch."""
-        super().__init__(coordinator)
-        self._attr_name = "Calculate Calories"
-        self._attr_unique_id = f"{coordinator.address}_calculate_calories"
-        self._attr_icon = "mdi:calculator"
-        self._attr_device_info = coordinator.device_info
-
-    @property
-    def is_on(self) -> bool:
-        """Return true if custom calories calculation is enabled."""
-        return self.coordinator.use_custom_calories
-
-    @property
-    def available(self) -> bool:
-        """The switch is always available."""
-        return True
-
-    async def async_turn_on(self, **kwargs: Any) -> None:
-        """Enable custom calorie calculation."""
-        self.coordinator.use_custom_calories = True
-        self.async_write_ha_state()
-
-    async def async_turn_off(self, **kwargs: Any) -> None:
-        """Disable custom calorie calculation."""
-        self.coordinator.use_custom_calories = False
         self.async_write_ha_state()

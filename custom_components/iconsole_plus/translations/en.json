@@ -15,5 +15,15 @@
     "error": {
       "no_devices_found_manual": "No iConsole+ devices found. Please enter the Bluetooth MAC address manually (e.g., AA:BB:CC:DD:EE:FF)."
     }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configure iConsole+",
+        "data": {
+          "calculate_calories": "Calculate metabolic calories instead of equipment estimates"
+        }
+      }
+    }
   }
 }
