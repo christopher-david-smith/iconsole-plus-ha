@@ -40,8 +40,10 @@ class IConsolePlusStartWorkoutButton(CoordinatorEntity[IConsolePlusCoordinator],
 
     @property
     def available(self) -> bool:
-        """Available only when connected to the bike."""
-        return self.coordinator.client is not None and self.coordinator.client.is_connected
+        """Available only when connected and not already running."""
+        is_connected = self.coordinator.client is not None and self.coordinator.client.is_connected
+        is_running = self.coordinator.data is not None and self.coordinator.data.is_running
+        return is_connected and not is_running
 
     async def async_press(self) -> None:
         """Press the button."""
@@ -60,8 +62,10 @@ class IConsolePlusPauseWorkoutButton(CoordinatorEntity[IConsolePlusCoordinator],
 
     @property
     def available(self) -> bool:
-        """Available only when connected to the bike."""
-        return self.coordinator.client is not None and self.coordinator.client.is_connected
+        """Available only when connected and actively running."""
+        is_connected = self.coordinator.client is not None and self.coordinator.client.is_connected
+        is_running = self.coordinator.data is not None and self.coordinator.data.is_running
+        return is_connected and is_running
 
     async def async_press(self) -> None:
         """Press the button."""
@@ -80,8 +84,10 @@ class IConsolePlusResetWorkoutButton(CoordinatorEntity[IConsolePlusCoordinator],
 
     @property
     def available(self) -> bool:
-        """Available only when connected to the bike."""
-        return self.coordinator.client is not None and self.coordinator.client.is_connected
+        """Available only when connected and not actively running."""
+        is_connected = self.coordinator.client is not None and self.coordinator.client.is_connected
+        is_running = self.coordinator.data is not None and self.coordinator.data.is_running
+        return is_connected and not is_running
 
     async def async_press(self) -> None:
         """Press the button."""
