@@ -123,6 +123,12 @@ class IConsolePlusCoordinator(DataUpdateCoordinator[TelemetryData]):
             _LOGGER.info("Sending start workout command")
             await self.client.start_workout()
 
+    async def async_reset_workout(self) -> None:
+        """Reset the workout."""
+        if self.client:
+            _LOGGER.info("Sending reset workout command")
+            await self.client.reset_workout()
+
     async def async_stop_workout(self) -> None:
         """Stop the workout."""
         if self.client:
